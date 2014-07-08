@@ -1,18 +1,20 @@
 import org.netkernel.layer0.nkf.*
+import static org.netkernel.layer0.nkf.INKFRequestReadOnly.*
 
-id=context.getThisRequest().getArgumentValue("id")
+INKFRequestContext context = context
 
-try
-{
-	req=context.createRequest("active:osBinary")
-	req.addArgument("id", id)
-	req.setVerb(INKFRequestReadOnly.VERB_SOURCE)
-	resp=context.issueRequestForResponse(req)
-	context.createResponseFrom(resp)
+id = context.getThisRequest ().getArgumentValue ("id")
+
+try {
+	req = context.createRequest ("active:osBinary")
+	req.addArgument ("id", id)
+	req.setVerb (VERB_SOURCE)
+	resp = context.issueRequestForResponse (req)
+	context.createResponseFrom (resp)
 }
-catch(Exception e)
-{	rep="404:  ${id} not found!".toString()
-	resp=context.createResponseFrom(rep)
-	resp.setHeader("httpResponse:/code", 404)
+catch (Exception ignored) {
+	rep = "404: ${id} not found!".toString()
+	resp = context.createResponseFrom (rep)
+	resp.setHeader ("httpResponse:/code", 404)
 }
 

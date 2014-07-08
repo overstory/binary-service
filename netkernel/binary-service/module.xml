@@ -22,7 +22,7 @@
 		<overlay>
 			<prototype>RESTOverlay</prototype>
 			<config>
-				<basepath>/binary/</basepath>
+				<basepath>/binstore/</basepath>
 				<auto404/>
 			</config>
 			<space>

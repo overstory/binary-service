@@ -1,31 +1,38 @@
 import org.netkernel.layer0.nkf.*;
+import static org.netkernel.layer0.nkf.INKFRequestReadOnly.*
 
-v=context.getThisRequest().getVerb()
-id=context.getThisRequest().getArgumentValue("id")
-mimetype=context.getThisRequest().getArgumentValue("mimetype")
+INKFRequestContext context = context
 
-base=context.source("res:/etc/osBinaryFileStore.cfg")
-f=base+id
-fm=base+id+".mime"
+verb = context.getThisRequest().getVerb()
+id = context.getThisRequest().getArgumentValue ("id")
+mimetype = context.getThisRequest().getArgumentValue ("mimetype")
 
-rep=null;
-switch(v)
-{
-	case INKFRequestReadOnly.VERB_SOURCE:
-		rep=context.source(f)
-		mimetype=context.source(fm, String.class)
+base = context.source ("res:/etc/osBinaryFileStore.cfg")
+file = base + id
+fileMeta = base + id + ".meta"
+
+def rep = null
+
+switch (verb) {
+case VERB_SOURCE:
+	rep = context.source (file)
+	mimetype = context.source (fileMeta, String.class)
 	break
-	case INKFRequestReadOnly.VERB_SINK:
-		p=context.sourcePrimary(Object.class)
-		context.sink(f, p)
-		context.sink(fm, mimetype)
+
+case VERB_SINK:
+	p = context.sourcePrimary (Object.class)
+	context.sink (file, p)
+	context.sink (fileMeta, mimetype)
 	break
-	case INKFRequestReadOnly.VERB_DELETE:
-		rep=context.delete(f)
-		rep=context.delete(fm)
+
+case VERB_DELETE:
+	context.delete (file)
+	rep = context.delete (fileMeta)
 	break
 }
-resp=context.createResponseFrom(rep);
-if(mimetype!=null)
-{	resp.setMimeType(mimetype)
+
+resp = context.createResponseFrom (rep);
+
+if (mimetype != null) {
+	resp.setMimeType (mimetype)
 }

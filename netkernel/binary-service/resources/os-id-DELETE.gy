@@ -1,10 +1,13 @@
 import org.netkernel.layer0.nkf.*
+import static org.netkernel.layer0.nkf.INKFRequestReadOnly.*
 
-id=context.getThisRequest().getArgumentValue("id")
+INKFRequestContext context = context
 
-req=context.createRequest("active:osBinary")
-req.addArgument("id", id)
-req.setVerb(INKFRequestReadOnly.VERB_DELETE)
-resp=context.issueRequestForResponse(req)
+id = context.getThisRequest ().getArgumentValue ("id")
 
-context.createResponseFrom(resp)
+req = context.createRequest ("active:osBinary")
+req.addArgument ("id", id)
+req.setVerb (VERB_DELETE)
+resp = context.issueRequestForResponse (req)
+
+context.createResponseFrom (resp)

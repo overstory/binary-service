@@ -3,7 +3,7 @@
 	<test name="PUT foo image/png">
 		<request>
 			<identifier>active:httpPut</identifier>
-			<argument name="url">http://localhost:8080/binary/id/foo</argument>
+			<argument name="url">http://localhost:8080/binstore/binary/id/foo</argument>
 			<argument name="body">res:/test/bin/test.png</argument>
 			<representation>java.lang.String</representation>
 		</request>
@@ -15,7 +15,7 @@
 	<test name="GET foo">
 		<request>
 			<identifier>active:httpGet</identifier>
-			<argument name="url">http://localhost:8080/binary/id/foo</argument>
+			<argument name="url">http://localhost:8080/binstore/binary/id/foo</argument>
 		</request>
 		<assert>
 			<mimetype>image/png</mimetype>
@@ -25,7 +25,7 @@
 	<test name="DELETE foo">
 		<request>
 			<identifier>active:httpDelete</identifier>
-			<argument name="url">http://localhost:8080/binary/id/foo</argument>
+			<argument name="url">http://localhost:8080/binstore/binary/id/foo</argument>
 			<representation>java.lang.String</representation>
 		</request>
 		<assert>
@@ -36,7 +36,7 @@
 	<test name="GET 404">
 		<request>
 			<identifier>active:httpGet</identifier>
-			<argument name="url">http://localhost:8080/binary/id/this-is-missing-expect-404</argument>
+			<argument name="url">http://localhost:8080/binstore/binary/id/this-is-missing-expect-404</argument>
 		</request>
 		<assert>
 			<responseCode>404</responseCode>

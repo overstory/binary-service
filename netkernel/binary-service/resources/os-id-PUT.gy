@@ -1,13 +1,16 @@
 import org.netkernel.layer0.nkf.*
+import static org.netkernel.layer0.nkf.INKFRequestReadOnly.*
 
-id=context.getThisRequest().getArgumentValue("id")
+INKFRequestContext context = context
 
-req=context.createRequest("active:osBinary")
-req.addArgument("id", id)
-req.addArgument("mimetype", context.source("httpRequest:/header/Content-Type"))
-req.addPrimaryArgumentFromResponse(context.sourceForResponse("httpRequest:/body"))
-req.setVerb(INKFRequestReadOnly.VERB_SINK)
-resp=context.issueRequestForResponse(req)
+id = context.getThisRequest ().getArgumentValue ("id")
 
-resp=context.createResponseFrom("PUT Success")
-resp.setHeader("httpResponse:/code", 201)
+req = context.createRequest ("active:osBinary")
+req.addArgument ("id", id)
+req.addArgument ("mimetype", context.source ("httpRequest:/header/Content-Type", String.class))
+req.addPrimaryArgumentFromResponse (context.sourceForResponse ("httpRequest:/body"))
+req.setVerb (VERB_SINK)
+resp = context.issueRequestForResponse (req)
+
+resp = context.createResponseFrom ("PUT Success")
+resp.setHeader ("httpResponse:/code", 201)
