@@ -1,0 +1,31 @@
+import org.netkernel.layer0.nkf.*;
+
+v=context.getThisRequest().getVerb()
+id=context.getThisRequest().getArgumentValue("id")
+mimetype=context.getThisRequest().getArgumentValue("mimetype")
+
+base=context.source("res:/etc/osBinaryFileStore.cfg")
+f=base+id
+fm=base+id+".mime"
+
+rep=null;
+switch(v)
+{
+	case INKFRequestReadOnly.VERB_SOURCE:
+		rep=context.source(f)
+		mimetype=context.source(fm, String.class)
+	break
+	case INKFRequestReadOnly.VERB_SINK:
+		p=context.sourcePrimary(Object.class)
+		context.sink(f, p)
+		context.sink(fm, mimetype)
+	break
+	case INKFRequestReadOnly.VERB_DELETE:
+		rep=context.delete(f)
+		rep=context.delete(fm)
+	break
+}
+resp=context.createResponseFrom(rep);
+if(mimetype!=null)
+{	resp.setMimeType(mimetype)
+}

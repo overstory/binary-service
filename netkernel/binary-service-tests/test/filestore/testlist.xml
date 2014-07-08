@@ -1,0 +1,36 @@
+<testlist>
+	<test name="SINK active:osBinary">
+		<request>
+			<verb>SINK</verb>
+			<identifier>active:osBinary</identifier>
+			<argument name="id">foo</argument>
+			<argument name="mimetype">image/png</argument>
+			<argument name="primary">res:/test/bin/test.png</argument>
+		</request>
+		<assert>
+			<null/>
+		</assert>
+	</test>
+	<test name="SOURCE active:osBinary">
+		<request>
+			<verb>SOURCE</verb>
+			<identifier>active:osBinary</identifier>
+			<argument name="id">foo</argument>
+		</request>
+		<assert>
+			<notNull/>
+			<mimetype>image/png</mimetype>
+		</assert>
+	</test>
+	<test name="DELETE active:osBinary">
+		<request>
+			<verb>DELETE</verb>
+			<identifier>active:osBinary</identifier>
+			<argument name="id">foo</argument>
+		</request>
+		<assert>
+			<true/>
+		</assert>
+	</test>
+
+</testlist>

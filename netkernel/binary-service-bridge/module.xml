@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="2.0">
+   <meta>
+      <identity>
+         <uri>urn:overstory.co.uk:service:binary:filestore-bridge</uri>
+         <version>1.0.0</version>
+      </identity>
+      <info>
+         <name>Binary Service Bridge</name>
+         <description>Bridge the REST Service to an implementation of the Binary store</description>
+      </info>
+   </meta>
+   <system>
+      <dynamic/>
+   </system>
+
+	<rootspace name="Binary Service - Bridge Implementation" public="true" uri="urn:overstory.co.uk:service:binary:bridge">
+		
+		<!--
+		Specifies the URI of the directory to use as the base for the simple filestore binary API
+		We can make this configurable later
+		-->
+		<literal type="string" uri="res:/etc/osBinaryFileStore.cfg">file:/home/pjr/temp/binstore/</literal>
+		
+		<!--Import the filestore impl of the binary API-->
+		<import>
+			<uri>urn:overstory.co.uk:service:binary:filestore</uri>
+		</import>
+	</rootspace>
+
+</module>

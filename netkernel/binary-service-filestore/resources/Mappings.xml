@@ -1,0 +1,18 @@
+<config>
+	<endpoint>
+		<verbs>SOURCE,SINK,DELETE</verbs>
+		<grammar>
+			<active>
+				<identifier>active:osBinary</identifier>
+				<argument name="id"/>
+				<argument name="mimetype" min="0" max="1"/>
+			</active>
+		</grammar>
+		<request>
+			<identifier>active:groovy</identifier>
+			<argument name="operator">res:/resources/osBinaryFileStore.gy</argument>
+			<argument name="id">arg:id</argument>
+			<argument name="mimetype">arg:mimetype</argument>
+		</request>
+	</endpoint>
+</config>

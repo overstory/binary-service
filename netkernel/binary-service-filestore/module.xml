@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="2.0">
+   <meta>
+      <identity>
+         <uri>urn:overstory.co.uk:service:binary:filestore</uri>
+         <version>1.0.0</version>
+      </identity>
+      <info>
+         <name>Binary Service - FileStore</name>
+         <description>File store to manage binary resources</description>
+      </info>
+   </meta>
+   <system>
+      <dynamic/>
+   </system>
+
+	<rootspace uri="urn:overstory.co.uk:service:binary:filestore" public="true" name="Binary Service - File Store">
+		<mapper>
+			<config>res:/resources/Mappings.xml</config>
+			<space>
+				<fileset>
+					<regex>res:/resources/.*</regex>
+				</fileset>
+				<import>
+					<uri>urn:org:netkernel:lang:groovy</uri>
+				</import>
+			</space>
+		</mapper>
+	</rootspace>
+
+</module>

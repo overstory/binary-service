@@ -1,0 +1,16 @@
+<tests>
+  <test>
+    <id>urn:test:uk:co:overstory:binary:filestore</id>
+    <name>Overstory Binary FileStore</name>
+    <desc>Test of Filestore</desc>
+    <uri>res:/test/filestore/testlist.xml</uri>
+    <icon></icon>
+  </test>
+  <test>
+    <id>urn:test:uk:co:overstory:binary:rest</id>
+    <name>Overstory Binary REST</name>
+    <desc>Test of REST Binary Service</desc>
+    <uri>res:/test/rest/testlist.xml</uri>
+    <icon></icon>
+  </test>
+</tests>

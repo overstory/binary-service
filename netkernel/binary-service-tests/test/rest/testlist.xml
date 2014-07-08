@@ -1,0 +1,45 @@
+<testlist>
+	<import>res:/test/rest/asserts.xml</import>
+	<test name="PUT foo image/png">
+		<request>
+			<identifier>active:httpPut</identifier>
+			<argument name="url">http://localhost:8080/binary/id/foo</argument>
+			<argument name="body">res:/test/bin/test.png</argument>
+			<representation>java.lang.String</representation>
+		</request>
+		<assert>
+			<stringEquals>PUT Success</stringEquals>
+			<responseCode>201</responseCode>
+		</assert>
+	</test>
+	<test name="GET foo">
+		<request>
+			<identifier>active:httpGet</identifier>
+			<argument name="url">http://localhost:8080/binary/id/foo</argument>
+		</request>
+		<assert>
+			<mimetype>image/png</mimetype>
+			<responseCode>200</responseCode>
+		</assert>
+	</test>
+	<test name="DELETE foo">
+		<request>
+			<identifier>active:httpDelete</identifier>
+			<argument name="url">http://localhost:8080/binary/id/foo</argument>
+			<representation>java.lang.String</representation>
+		</request>
+		<assert>
+			<stringEquals>true</stringEquals>
+			<responseCode>200</responseCode>
+		</assert>
+	</test>
+	<test name="GET 404">
+		<request>
+			<identifier>active:httpGet</identifier>
+			<argument name="url">http://localhost:8080/binary/id/this-is-missing-expect-404</argument>
+		</request>
+		<assert>
+			<responseCode>404</responseCode>
+		</assert>
+	</test>
+</testlist>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="2.0">
+   <meta>
+      <identity>
+         <uri>urn:overstory.co.uk:service:binary</uri>
+         <version>1.0.0</version>
+      </identity>
+      <info>
+         <name>Binary Service</name>
+         <description>REST Service to manage binary resources</description>
+      </info>
+   </meta>
+   <system>
+      <dynamic/>
+   </system>
+
+	<rootspace uri="urn:overstory.co.uk:service:binary" public="true" name="Binary Service REST endpoints">
+		<fileset>
+			<regex>res:/etc/system/SimpleDynamicImportHook.xml</regex>
+		</fileset>
+
+		<overlay>
+			<prototype>RESTOverlay</prototype>
+			<config>
+				<basepath>/binary/</basepath>
+				<auto404/>
+			</config>
+			<space>
+				<mapper>
+					<config>res:/resources/RESTEndpointMappings.xml</config>
+					<space>
+						<fileset>
+							<regex>res:/resources/.*</regex>
+						</fileset>
+						<import>
+							<uri>urn:org:netkernel:lang:groovy</uri>
+						</import>
+						<import>
+							<uri>urn:overstory.co.uk:service:binary:bridge</uri>
+						</import>
+					</space>
+				</mapper>
+			</space>
+		</overlay>
+		<import>
+			<private/>
+			<uri>urn:org:netkernel:tpt:http</uri>
+		</import>
+	</rootspace>
+
+   <rootspace name="Binary Service - Documentation Space" public="true" uri="urn:overstory.co.uk:service:binary:doc">
+      <fileset>
+         <regex>res:/etc/system/(Books|Docs).xml</regex>
+      </fileset>
+      <fileset>
+         <regex>res:/resources/doc/.*</regex>
+      </fileset>
+   </rootspace>
+
+</module>

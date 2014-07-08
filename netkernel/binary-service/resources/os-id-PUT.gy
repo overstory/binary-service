@@ -1,0 +1,13 @@
+import org.netkernel.layer0.nkf.*
+
+id=context.getThisRequest().getArgumentValue("id")
+
+req=context.createRequest("active:osBinary")
+req.addArgument("id", id)
+req.addArgument("mimetype", context.source("httpRequest:/header/Content-Type"))
+req.addPrimaryArgumentFromResponse(context.sourceForResponse("httpRequest:/body"))
+req.setVerb(INKFRequestReadOnly.VERB_SINK)
+resp=context.issueRequestForResponse(req)
+
+resp=context.createResponseFrom("PUT Success")
+resp.setHeader("httpResponse:/code", 201)
