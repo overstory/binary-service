@@ -29,7 +29,7 @@
 			<argument name="id">foo</argument>
 		</request>
 		<assert>
-			<true/>
+			<stringEquals/>
 		</assert>
 	</test>
 

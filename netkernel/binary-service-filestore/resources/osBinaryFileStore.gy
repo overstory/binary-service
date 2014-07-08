@@ -27,7 +27,8 @@ case VERB_SINK:
 
 case VERB_DELETE:
 	context.delete (file)
-	rep = context.delete (fileMeta)
+	context.delete (fileMeta)
+	rep = ""
 	break
 }
 

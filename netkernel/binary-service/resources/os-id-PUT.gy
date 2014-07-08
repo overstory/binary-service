@@ -4,13 +4,18 @@ import static org.netkernel.layer0.nkf.INKFRequestReadOnly.*
 INKFRequestContext context = context
 
 id = context.getThisRequest ().getArgumentValue ("id")
+// ToDo: Need to dereference Content-Type (without parameters) and ETag header
+// Validate that content type is present and well-formed
+//    Return 415 and error body if missing or bad.
+// Make sure ETag matches if pre-existing file.  Ignore if no current file.  Send ETag to active:osBinary.
+//    Return 409 and error body if ETag doesn't match
 
 req = context.createRequest ("active:osBinary")
 req.addArgument ("id", id)
-req.addArgument ("mimetype", context.source ("httpRequest:/header/Content-Type", String.class))
+req.addArgument ("mimetype", context.source ("httpRequest:/header/Content-Type", String.class))		// This is not safe, header may contain parameters as well
 req.addPrimaryArgumentFromResponse (context.sourceForResponse ("httpRequest:/body"))
 req.setVerb (VERB_SINK)
-resp = context.issueRequestForResponse (req)
+context.issueRequestForResponse (req)
 
-resp = context.createResponseFrom ("PUT Success")
+resp = context.createResponseFrom ("")
 resp.setHeader ("httpResponse:/code", 201)

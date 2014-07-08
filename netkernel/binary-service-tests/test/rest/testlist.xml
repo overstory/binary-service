@@ -8,7 +8,7 @@
 			<representation>java.lang.String</representation>
 		</request>
 		<assert>
-			<stringEquals>PUT Success</stringEquals>
+			<stringEquals/>
 			<responseCode>201</responseCode>
 		</assert>
 	</test>
@@ -29,8 +29,8 @@
 			<representation>java.lang.String</representation>
 		</request>
 		<assert>
-			<stringEquals>true</stringEquals>
-			<responseCode>200</responseCode>
+			<stringEquals/>
+			<responseCode>204</responseCode>
 		</assert>
 	</test>
 	<test name="GET 404">

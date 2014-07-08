@@ -5,14 +5,16 @@ INKFRequestContext context = context
 
 id = context.getThisRequest ().getArgumentValue ("id")
 
+// ToDo: check Accept: header.  If not empty, test that mime-type stored for file is in the list
+//   Return 406 and error body if not
+
 try {
 	req = context.createRequest ("active:osBinary")
 	req.addArgument ("id", id)
 	req.setVerb (VERB_SOURCE)
 	resp = context.issueRequestForResponse (req)
 	context.createResponseFrom (resp)
-}
-catch (Exception ignored) {
+} catch (Exception ignored) {
 	rep = "404: ${id} not found!".toString()
 	resp = context.createResponseFrom (rep)
 	resp.setHeader ("httpResponse:/code", 404)
