@@ -1,6 +1,8 @@
 import org.netkernel.layer0.nkf.*
 import static org.netkernel.layer0.nkf.INKFRequestReadOnly.*
 
+import org.netkernel.mod.hds.*
+
 INKFRequestContext context = context
 
 id = context.getThisRequest ().getArgumentValue ("id")
@@ -11,10 +13,39 @@ id = context.getThisRequest ().getArgumentValue ("id")
 try {
 	req = context.createRequest ("active:osBinary")
 	req.addArgument ("id", id)
+	hash=context.source ("httpRequest:/header/IfNoneMatch", String.class);
+	//println("IfNoneMatch: "+hash)
+	if(hash!=null)
+	{	req.addArgument ("hash", hash)
+	}
 	req.setVerb (VERB_SOURCE)
-	resp = context.issueRequestForResponse (req)
-	context.createResponseFrom (resp)
+	hds = context.issueRequest(req)
+	hds=hds.getReader()
+	
+	rep=null
+	code=null
+	mimetype=null
+	
+	if(hds.getFirstValueOrNull("/hds/equal")!=null)
+	{	rep=""	
+		code=304
+	}
+	else
+	{	rep=hds.getFirstValue("/hds/binary")
+		code=200
+		hash=hds.getFirstValue("/hds/hash")
+	}
+		
+	resp=context.createResponseFrom (rep)
+	resp.setHeader ("httpResponse:/code", code)
+	resp.setHeader ("httpResponse:/header/Etag", hash)
+	mimetype=hds.getFirstValueOrNull("/hds/mimetype")
+	if(mimetype!=null)
+	{	resp.setMimeType(mimetype)
+	}
+	
 } catch (Exception ignored) {
+	//ignored.printStackTrace()
 	rep = "404: ${id} not found!".toString()
 	resp = context.createResponseFrom (rep)
 	resp.setHeader ("httpResponse:/code", 404)

@@ -36,6 +36,9 @@
 							<uri>urn:org:netkernel:lang:groovy</uri>
 						</import>
 						<import>
+							<uri>urn:org:netkernel:mod:hds</uri>
+						</import>
+						<import>
 							<uri>urn:overstory.co.uk:service:binary:bridge</uri>
 						</import>
 					</space>

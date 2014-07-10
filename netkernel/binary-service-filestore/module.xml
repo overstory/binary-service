@@ -24,6 +24,12 @@
 				<import>
 					<uri>urn:org:netkernel:lang:groovy</uri>
 				</import>
+				<import>
+					<uri>urn:org:netkernel:mod:security</uri>
+				</import>
+				<import>
+					<uri>urn:org:netkernel:mod:hds</uri>
+				</import>
 			</space>
 		</mapper>
 	</rootspace>

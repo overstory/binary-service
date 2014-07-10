@@ -1,0 +1,18 @@
+<testlist>
+	<assertDefinition name="hdsxpath">
+		<identifier>active:groovy</identifier>
+		<argument name="operand">arg:test:result</argument>
+		<argument name="xpath">arg:test:tagValue</argument>
+		<argument name="operator">
+		<literal type="string">
+		<![CDATA[
+		hds=context.source("arg:operand");
+		xpath=context.source("arg:xpath");
+		rep=hds.getReader().getFirstValueOrNull(xpath)
+		context.createResponseFrom(rep!=null);
+		]]>
+		</literal>
+		</argument>
+	</assertDefinition>
+	
+</testlist>

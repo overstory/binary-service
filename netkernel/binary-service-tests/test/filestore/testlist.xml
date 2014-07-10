@@ -1,4 +1,5 @@
 <testlist>
+	<import>res:/test/filestore/asserts.xml</import>
 	<test name="SINK active:osBinary">
 		<request>
 			<verb>SINK</verb>
@@ -19,7 +20,8 @@
 		</request>
 		<assert>
 			<notNull/>
-			<mimetype>image/png</mimetype>
+			<hdsxpath>/hds/mimetype='image/png'</hdsxpath>
+			<hdsxpath>/hds/hash='d5ea3cf0a105cc4d707686e392eff91d2ddfed63b95573bfaa5b7061546682cf167db6df6bd5ab655752b68a24ed6b476613096bc48d878a597805409ba12d16'</hdsxpath>
 		</assert>
 	</test>
 	<test name="DELETE active:osBinary">
@@ -29,7 +31,7 @@
 			<argument name="id">foo</argument>
 		</request>
 		<assert>
-			<stringEquals/>
+			<true/>
 		</assert>
 	</test>
 

@@ -5,7 +5,6 @@
 			<rest>
 				<simple>binary/id/{id}</simple>
 				<method>PUT</method>
-				<Etag>SHA1</Etag>
 				<compress/>
 			</rest>
 		</meta>
@@ -27,7 +26,6 @@
 			<rest>
 				<simple>binary/id/{id}</simple>
 				<method>GET,HEAD</method>
-				<Etag>SHA1</Etag>
 				<compress/>
 			</rest>
 		</meta>
@@ -49,7 +47,6 @@
 			<rest>
 				<simple>binary/id/{id}</simple>
 				<method>DELETE</method>
-				<Etag>SHA1</Etag>
 				<compress/>
 			</rest>
 		</meta>

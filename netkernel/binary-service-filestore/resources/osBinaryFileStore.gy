@@ -1,39 +1,59 @@
 import org.netkernel.layer0.nkf.*;
 import static org.netkernel.layer0.nkf.INKFRequestReadOnly.*
 
+import org.netkernel.mod.hds.*
+import org.netkernel.mod.hds.impl.*
+
 INKFRequestContext context = context
 
 verb = context.getThisRequest().getVerb()
 id = context.getThisRequest().getArgumentValue ("id")
 mimetype = context.getThisRequest().getArgumentValue ("mimetype")
+hash = context.getThisRequest().getArgumentValue ("hash")
 
 base = context.source ("res:/etc/osBinaryFileStore.cfg")
 file = base + id
 fileMeta = base + id + ".meta"
+fileSHA = base + id + ".sha"
+
+def m = new HDSMutatorImpl()
+m.pushNode("hds")
 
 def rep = null
 
 switch (verb) {
 case VERB_SOURCE:
-	rep = context.source (file)
-	mimetype = context.source (fileMeta, String.class)
+	hash2 = context.source (fileSHA, String.class)
+	m.addNode("hash", hash2)
+	//println(hash+"\n"+hash2)
+	if(hash.equals(hash2))
+	{	m.addNode("equal", true)
+	}
+	else
+	{	rep = context.source (file)
+		mimetype = context.source (fileMeta, String.class)
+		m.addNode("binary", rep)
+		m.addNode("mimetype", mimetype)
+	}
+	rep=m.toDocument(false)
 	break
 
 case VERB_SINK:
 	p = context.sourcePrimary (Object.class)
 	context.sink (file, p)
 	context.sink (fileMeta, mimetype)
+	req=context.createRequest("active:sha512sum")
+	req.addArgument("operand", file)
+	hash=context.issueRequest(req)
+	context.sink (fileSHA, hash)
 	break
 
 case VERB_DELETE:
 	context.delete (file)
 	context.delete (fileMeta)
-	rep = ""
+	context.delete (fileSHA)
+	rep = true
 	break
 }
 
 resp = context.createResponseFrom (rep);
-
-if (mimetype != null) {
-	resp.setMimeType (mimetype)
-}
