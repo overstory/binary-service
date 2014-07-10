@@ -20,20 +20,27 @@ try {
 	}
 	req.setVerb (VERB_SOURCE)
 	hds = context.issueRequest(req)
-	hds=hds.getReader()
+	hds=hds.getReader().getFirstNode("/hds")
 	
 	rep=null
 	code=null
 	mimetype=null
 	
-	if(hds.getFirstValueOrNull("/hds/equal")!=null)
+	if(hds.getFirstValueOrNull("equal")!=null)
 	{	rep=""	
 		code=304
 	}
 	else
-	{	rep=hds.getFirstValue("/hds/binary")
-		code=200
-		hash=hds.getFirstValue("/hds/hash")
+	{	x404=hds.getFirstValueOrNull("notfound")
+		if(x404!=null)
+		{	rep = "404: ${id} not found!".toString()
+			code= 404
+		}
+		else
+		{	rep=hds.getFirstValue("binary")
+			code=200
+			hash=hds.getFirstValue("hash")
+		}
 	}
 		
 	resp=context.createResponseFrom (rep)
@@ -44,10 +51,8 @@ try {
 	{	resp.setMimeType(mimetype)
 	}
 	
-} catch (Exception ignored) {
-	//ignored.printStackTrace()
-	rep = "404: ${id} not found!".toString()
-	resp = context.createResponseFrom (rep)
-	resp.setHeader ("httpResponse:/code", 404)
+} catch (Exception e) {
+	e.printStackTrace()
+	throw e
 }
 

@@ -23,17 +23,27 @@ def rep = null
 
 switch (verb) {
 case VERB_SOURCE:
-	hash2 = context.source (fileSHA, String.class)
-	m.addNode("hash", hash2)
-	//println(hash+"\n"+hash2)
-	if(hash.equals(hash2))
-	{	m.addNode("equal", true)
+	try
+	{	hash2 = context.source (fileSHA, String.class)
+		m.addNode("hash", hash2)
+		//println(hash+"\n"+hash2)
+		if(hash.equals(hash2))
+		{	m.addNode("equal", true)
+		}
+		else
+		{	rep = context.source (file)
+			mimetype = context.source (fileMeta, String.class)
+			m.addNode("binary", rep)
+			m.addNode("mimetype", mimetype)
+		}
 	}
-	else
-	{	rep = context.source (file)
-		mimetype = context.source (fileMeta, String.class)
-		m.addNode("binary", rep)
-		m.addNode("mimetype", mimetype)
+	catch(e)
+	{	if(e.getDeepestCause() instanceof java.io.FileNotFoundException)
+		{	m.addNode("notfound", true)		
+		}
+		else
+		{	throw e;
+		}
 	}
 	rep=m.toDocument(false)
 	break
