@@ -8,6 +8,23 @@ id = context.getThisRequest ().getArgumentValue ("id")
 // ToDo: Insure that ETag header is present and matches
 //   Return 409 and error body if doesn't match
 
+/*get the ETag header.  get the underlying representation hash.  Check.
+ * If none exists ignore ETag say you deleted
+ * else if etag - then it must match existing hash or send 409 conflict
+ * if it does match then delete binary  
+ */
+
+//Perform Etag verification to prevent deletion of already modified resource
+etag = context.source("httpRequest:/header/Etag")
+req = context.createRequest ("active:osBinary")
+req.addArgument ("id", id)
+hds=context.issueRequest(req)
+hash=hds.getReader().getFirstValue("/hds/hash")
+if(etag==null || !hash.equals(etag.replaceAll("\"", "")))
+{	//throw 409 conflict
+	throw new Exception ("409 Conflict,  Etag hash does not match stored binary hash")
+}
+
 req = context.createRequest ("active:osBinary")
 req.addArgument ("id", id)
 req.setVerb (VERB_DELETE)

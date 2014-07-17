@@ -10,6 +10,25 @@ id = context.getThisRequest ().getArgumentValue ("id")
 // Make sure ETag matches if pre-existing file.  Ignore if no current file.  Send ETag to active:osBinary.
 //    Return 409 and error body if ETag doesn't match
 
+/*get the ETag header.  get the underlying representation hash.  Check.  Extract from quotes.
+ * If none exists ignore ETag and store binary
+ * else if etag - then it must match existing hash or send 409 config
+ * if it does store the binary.  
+ */
+
+//Perform Etag verification to prevent deletion of already modified resource
+etag = context.source("httpRequest:/header/Etag")
+if(etag!=null)
+{	req = context.createRequest ("active:osBinary")
+	req.addArgument ("id", id)
+	hds=context.issueRequest(req)
+	hash=hds.getReader().getFirstValue("/hds/hash")
+	if(!hash.equals(etag.replaceAll("\"", "")))
+	{	//throw 409 conflict
+		throw new Exception ("409 Conflict,  Etag hash does not match stored binary hash")
+	}
+}
+
 mimetype = context.source ("httpRequest:/content-type")
 if(mimetype==null || !mimetype.matches(".*?/.*?"))
 {	throw new BadContentTypeException("Must provide valid Content-Type header", mimetype)

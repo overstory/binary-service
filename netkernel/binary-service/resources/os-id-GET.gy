@@ -47,7 +47,7 @@ try {
 	
 	resp=context.createResponseFrom (rep)
 	resp.setHeader ("httpResponse:/code", code)
-	resp.setHeader ("httpResponse:/header/Etag", hash)
+	resp.setHeader ("httpResponse:/header/Etag", "\""+hash+"\"")
 	
 	if(mimetype!=null)
 	{	resp.setMimeType(mimetype)
