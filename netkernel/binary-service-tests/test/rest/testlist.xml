@@ -12,14 +12,47 @@
 			<responseCode>201</responseCode>
 		</assert>
 	</test>
-	<test name="GET foo">
+	<test name="GET foo - No Accept header but be TOLERANT and serve image anyway">
 		<request>
 			<identifier>active:httpGet</identifier>
 			<argument name="url">http://localhost:8080/binstore/binary/id/foo</argument>
 		</request>
 		<assert>
+			<responseCode>200</responseCode>
+			<mimetype>image/png</mimetype>
+		</assert>
+	</test>
+	<test name="GET foo  - Accept image/*">
+		<request>
+			<identifier>active:httpGet</identifier>
+			<argument name="url">http://localhost:8080/binstore/binary/id/foo</argument>
+			<argument name="headers">
+			<literal type="hds">
+				<hds>
+					<Accept>image/*; 0.7</Accept>
+				</hds>
+			</literal>
+			</argument>
+		</request>
+		<assert>
 			<mimetype>image/png</mimetype>
 			<responseCode>200</responseCode>
+		</assert>
+	</test>
+	<test name="GET foo - Accept text/* - EXPECT 406">
+		<request>
+			<identifier>active:httpGet</identifier>
+			<argument name="url">http://localhost:8080/binstore/binary/id/foo</argument>
+			<argument name="headers">
+			<literal type="hds">
+				<hds>
+					<Accept>text/*; 0.7</Accept>
+				</hds>
+			</literal>
+			</argument>
+		</request>
+		<assert>
+			<responseCode>406</responseCode>
 		</assert>
 	</test>
 	<test name="GET foo - expect 304">

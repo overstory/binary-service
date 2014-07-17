@@ -1,0 +1,62 @@
+import org.netkernel.layer0.nkf.INKFRequestContext
+import org.netkernel.layer0.nkf.NKFException
+import org.netkernel.layer0.representation.*
+import org.netkernel.mod.hds.*;
+import org.netkernel.mod.hds.impl.*;
+
+INKFRequestContext context = context
+
+def errorContentType = "application/vnd.overstory.error+xml"
+
+// ---------------------------------------------
+
+def String stackTraceAsString (Throwable e)
+{
+	CharArrayWriter buffer = new CharArrayWriter()
+	PrintWriter pw = new PrintWriter (buffer)
+
+	e.printStackTrace (pw)
+	return buffer.toString()
+}
+
+def nodeValue (IHDSReader hds, String path, defaultValue)
+{
+	try { return hds.getFirstValue (path) } catch (Exception ignored) { return defaultValue }
+}
+
+// ---------------------------------------------
+
+IHDSDocument hds
+Throwable exception = context.source ("arg:exception").getException().getDeepestCause()
+
+if (exception.metaClass.getMetaMethod ("getHDS") != null) {
+	hds = exception.getHDS()
+} else {
+	m = new HDSMutatorImpl()
+	m.pushNode ("exception")
+	m.addNode ("code", 500)
+	m.addNode ("Content-Type", errorContentType)
+	m.addNode ("type", "UNEXPECTED-EXCEPTION")
+	m.addNode ("message", exception.getMessage())
+	m.addNode ("name", exception.toString())
+	m.addNode ("stack-trace", stackTraceAsString (exception))
+	hds = m.toDocument (false);
+}
+
+// Format the exception
+req = context.createRequest ("active:xslt2")
+req.addArgumentByValue ("operand", hds)
+req.addArgument ("operator", "res:/resources/error/formatException.xsl")
+req.setRepresentationClass(IReadableBinaryStreamRepresentation.class)
+rep = context.issueRequest (req);
+
+response = context.createResponseFrom (rep)
+
+// Need reader for HDS
+IHDSReader hdsr = hds.getReader();
+String mimeType = nodeValue (hdsr, "/exception/Content-Type", errorContentType)
+
+response.setHeader ("httpResponse:/code", nodeValue (hdsr, "/exception/code", 400))
+response.setHeader ("httpResponse:/header/Server", "")
+response.setHeader ("httpResponse:/header/Content-Type", mimeType)
+response.setMimeType (mimeType)

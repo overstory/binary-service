@@ -1,0 +1,18 @@
+<config>
+	<endpoint>
+		<id>binaryDefaultErrorHandler</id>
+		<grammar>
+			<active>
+				<identifier>active:binaryTools/error/default</identifier>
+				<argument name="request"/>
+				<argument name="exception"/>
+			</active>
+		</grammar>
+		<request>
+			<identifier>active:groovy</identifier>
+			<argument name="operator">res:/resources/error/defaultExceptionHandler.gy</argument>
+			<argument name="request">arg:request</argument>
+			<argument name="exception">arg:exception</argument>
+		</request>
+	</endpoint>
+</config>

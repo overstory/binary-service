@@ -1,21 +1,72 @@
 import org.netkernel.layer0.nkf.*
 import static org.netkernel.layer0.nkf.INKFRequestReadOnly.*
 
+import org.netkernel.mod.hds.*
+
 INKFRequestContext context = context
 
 id = context.getThisRequest ().getArgumentValue ("id")
-// ToDo: Need to dereference Content-Type (without parameters) and ETag header
-// Validate that content type is present and well-formed
-//    Return 415 and error body if missing or bad.
+// ToDo: 
 // Make sure ETag matches if pre-existing file.  Ignore if no current file.  Send ETag to active:osBinary.
 //    Return 409 and error body if ETag doesn't match
 
+mimetype = context.source ("httpRequest:/content-type")
+if(mimetype==null || !mimetype.matches(".*?/.*?"))
+{	throw new BadContentTypeException("Must provide valid Content-Type header", mimetype)
+}
+
 req = context.createRequest ("active:osBinary")
 req.addArgument ("id", id)
-req.addArgument ("mimetype", context.source ("httpRequest:/header/Content-Type", String.class))		// This is not safe, header may contain parameters as well
+req.addArgument ("mimetype", mimetype)
 req.addPrimaryArgumentFromResponse (context.sourceForResponse ("httpRequest:/body"))
 req.setVerb (VERB_SINK)
 context.issueRequestForResponse (req)
 
 resp = context.createResponseFrom ("")
 resp.setHeader ("httpResponse:/code", 201)
+
+def class BadContentTypeException extends ContentProcessingException
+{
+	BadContentTypeException (String message, String mimeType)
+	{
+		super (message, null,
+			HDSFactory.newDocument()
+				.pushNode ("exception")
+				.addNode ("type", "BadContentType")
+				.addNode ("code", 415)
+				.addNode ("bad-content-type", mimeType))
+	}
+}
+
+def abstract class ContentProcessingException extends Exception
+{
+	IHDSDocument representation;
+
+	ContentProcessingException (String message, Throwable cause, IHDSMutator ex)
+	{
+		super (message, null)	// FixMe: should be able to pass cause along to super class constructor
+
+		ex.addNode ("message", message)
+		ex.addNode ("class", cause.getClass().getName())
+		addCause (ex, cause)
+
+		representation = ex.toDocument (false)
+	}
+
+	void addCause (IHDSMutator ex, Throwable cause)
+	{
+		if (cause == null) return
+
+		ex.pushNode ("cause")
+		ex.addNode ("message", cause.getMessage())
+		ex.addNode ("class", cause.getClass().getName())
+		ex.addNode ("name", cause.toString())
+		// ToDo: Insert stack trace of cause here?
+
+		addCause (ex, cause.getCause())
+
+		ex.popNode()
+	}
+
+	IHDSDocument getHDS() { representation }
+}

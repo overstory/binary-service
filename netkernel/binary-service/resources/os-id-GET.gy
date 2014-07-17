@@ -7,9 +7,6 @@ INKFRequestContext context = context
 
 id = context.getThisRequest ().getArgumentValue ("id")
 
-// ToDo: check Accept: header.  If not empty, test that mime-type stored for file is in the list
-//   Return 406 and error body if not
-
 try {
 	req = context.createRequest ("active:osBinary")
 	req.addArgument ("id", id)
@@ -42,11 +39,16 @@ try {
 			hash=hds.getFirstValue("hash")
 		}
 	}
-		
+	mimetype=hds.getFirstValueOrNull("/hds/mimetype")
+	if(mimetype!=null  && context.source("httpRequest:/header/Accept")!=null && !context.source("httpRequest:/acceptable/"+mimetype))
+	{	//Mimetype is not acceptable to client... 
+		throw new UnacceptableContentTypeException("406 Mimetype not acceptable to client", mimetype)
+	}
+	
 	resp=context.createResponseFrom (rep)
 	resp.setHeader ("httpResponse:/code", code)
 	resp.setHeader ("httpResponse:/header/Etag", hash)
-	mimetype=hds.getFirstValueOrNull("/hds/mimetype")
+	
 	if(mimetype!=null)
 	{	resp.setMimeType(mimetype)
 	}
@@ -56,3 +58,48 @@ try {
 	throw e
 }
 
+def class UnacceptableContentTypeException extends ContentProcessingException
+{
+	UnacceptableContentTypeException (String message, String mimeType)
+	{
+		super (message, null,
+			HDSFactory.newDocument()
+				.pushNode ("exception")
+				.addNode ("type", "UnacceptableContentType")
+				.addNode ("code", 406)
+				.addNode ("bad-content-type", mimeType))
+	}
+}
+
+def abstract class ContentProcessingException extends Exception
+{
+	IHDSDocument representation;
+
+	ContentProcessingException (String message, Throwable cause, IHDSMutator ex)
+	{
+		super (message, null)	// FixMe: should be able to pass cause along to super class constructor
+
+		ex.addNode ("message", message)
+		ex.addNode ("class", cause.getClass().getName())
+		addCause (ex, cause)
+
+		representation = ex.toDocument (false)
+	}
+
+	void addCause (IHDSMutator ex, Throwable cause)
+	{
+		if (cause == null) return
+
+		ex.pushNode ("cause")
+		ex.addNode ("message", cause.getMessage())
+		ex.addNode ("class", cause.getClass().getName())
+		ex.addNode ("name", cause.toString())
+		// ToDo: Insert stack trace of cause here?
+
+		addCause (ex, cause.getCause())
+
+		ex.popNode()
+	}
+
+	IHDSDocument getHDS() { representation }
+}

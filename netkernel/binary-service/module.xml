@@ -24,10 +24,14 @@
 			<config>
 				<basepath>/binstore/</basepath>
 				<auto404/>
+				<globalExceptionTarget>binaryDefaultErrorHandler</globalExceptionTarget>
 			</config>
 			<space>
 				<mapper>
-					<config>res:/resources/RESTEndpointMappings.xml</config>
+					<config>
+						<import>res:/resources/RESTEndpointMappings.xml</import>
+						<import>res:/resources/error/mappings.xml</import>
+					</config>
 					<space>
 						<fileset>
 							<regex>res:/resources/.*</regex>
@@ -40,6 +44,9 @@
 						</import>
 						<import>
 							<uri>urn:overstory.co.uk:service:binary:bridge</uri>
+						</import>
+						<import>
+							<uri>urn:org:netkernel:xml:saxon</uri>
 						</import>
 					</space>
 				</mapper>
